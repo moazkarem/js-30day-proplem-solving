@@ -12,3 +12,4 @@ const args = [2],
   cancelTimeMs = 50;
 
 console.log(cancellable(fn, args, t))
+setTimeout(cancellable , cancelTimeMs)
