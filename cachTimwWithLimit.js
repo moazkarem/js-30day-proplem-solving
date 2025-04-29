@@ -3,40 +3,35 @@ var TimeLimitedCache = function () {
 };
 
 TimeLimitedCache.prototype.set = function (key, value, duration) {
-  let end = Date.now() + duration;
+  const currentTime = Date.now();
+  const isValid = this.cash[key] && this.cash[key].end > currentTime;
+
   this.cash[key] = {
     value,
-    end,
+    end: currentTime + duration,
   };
-  if (this.cash[key].end > end) {
-    return true;
-  } else {
-    return false;
-  }
+
+  return !!isValid;
 };
 
 TimeLimitedCache.prototype.get = function (key) {
-  if (Date.now() < this.cash[key].end) {
-    return this.cash[key].value;
+  const data = this.cash[key];
+  if (data && Date.now() < data.end) {
+    return data.value;
   } else {
     return -1;
   }
 };
 
 TimeLimitedCache.prototype.count = function () {
+  const now = Date.now();
   let counter = 0;
-  const keysNum = Object.keys(this.cash);
-  keysNum.map((item) => {
-    if (this.cash[item].end < Date.now()) {
+
+  for (const key in this.cash) {
+    if (this.cash[key].end > now) {
       counter++;
     }
-  });
-  return keysNum.length;
+  }
+
+  return counter;
 };
-
-const time = new TimeLimitedCache();
-
-console.log(time.set(1, 42, 100));
-console.log(time.get(1));
-console.log(time.count());
-// console.log('name' in obj)
