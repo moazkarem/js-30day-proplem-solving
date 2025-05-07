@@ -5,7 +5,7 @@ function promiseAll(functions) {
     const resulte = [];
 
     functions.map((fn, idx) =>
-      fn()
+      fn()  
         .then((val) => {
           resulte[idx] = val;
           count++;
